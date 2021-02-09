@@ -43,8 +43,14 @@ fw = open("dnssec-valid.txt","wb")
 ctx.debugout(fw)
 ctx.debuglevel(2)
 
+# load anchor keys
+# standard location of Linux
+# when the file does not exist, it returns -6 but does not fail
+ctx.trustedkeys('/etc/unbound/root.key')
+
+# your very own public keys you trust for DNSSEC verification
 if os.path.isfile("keys"):
-    ctx.add_ta_file("keys") #read public keys for DNSSEC verification
+    ctx.add_ta_file("keys")
 
 status, result = ctx.resolve("www.nic.cz", RR_TYPE_A, RR_CLASS_IN)
 if status == 0 and result.havedata:
